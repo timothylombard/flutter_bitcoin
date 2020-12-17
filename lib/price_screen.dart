@@ -16,6 +16,11 @@ class _PriceScreenState extends State<PriceScreen> {
   String selectFiat = '?';
   String selectCrypto = 'BTC';
   String targetURL = '$coinAPIURL/BTC/USD?apiKey=$apiKey';
+  String requestCurrency = '?';
+  String requestCrypto = '?';
+  String responseCurrency = '?';
+  String responseCrypto ='?';
+  String responseValue = '0.0';
 
 
   DropdownButton<String> androidCurrencyDropdown() {
@@ -29,11 +34,11 @@ class _PriceScreenState extends State<PriceScreen> {
     }
 
     return DropdownButton<String>(
-      value: selectedCurrency,
+      value: requestCurrency,
       items: dropdownItems,
       onChanged: (value) {
         setState(() {
-          selectedCurrency = value;
+          requestCurrency = value;
         });
       },
     );
@@ -50,11 +55,11 @@ class _PriceScreenState extends State<PriceScreen> {
     }
 
     return DropdownButton<String>(
-      value: selectedCrypto,
+      value: requestCrypto,
       items: dropdownItems,
       onChanged: (value) {
         setState(() {
-          selectedCurrency = value;
+          requestCrypto = value;
         });
       },
     );
@@ -75,11 +80,11 @@ class _PriceScreenState extends State<PriceScreen> {
         print(selectedIndex);
         String selectedFiat = currenciesList[selectedIndex];
         print(selectedFiat);
-        fiatValue = selectedFiat;
+        //requestCurrency = selectedFiat;
         setState(() {
-          selectFiat = selectedFiat;
+          requestCurrency = selectedFiat;
         });
-        targetURL = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
+        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
         print(targetURL);
         //getData(coinUrl);
 
@@ -105,9 +110,9 @@ class _PriceScreenState extends State<PriceScreen> {
         print(selectedCrypto);
         //String cryptoValue = selectedCrypto;
         setState(() {
-          selectCrypto = selectedCrypto;
+          requestCrypto = selectedCrypto;
         });
-        targetURL = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
+        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
         print(targetURL);
         //getData(coinUrl);
 
@@ -117,18 +122,22 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   //12. Create a variable to hold the value and use in our Text Widget. Give the variable a starting value of '?' before the data comes back from the async methods.
-  String bitcoinValueInUSD = '?';
-  String fiatValue = 'USD';
+
+
+
 
 
   //11. Create an async method here await the coin data from coin_data.dart
   void getData(String newurl) async {
+
     try {
       double data = await CoinData().getCoinData(newurl);
       print(data);
       //13. We can't await in a setState(). So you have to separate it out into two steps.
       setState(() {
-        bitcoinValueInUSD = data.toStringAsFixed(0);
+        responseValue = data.toStringAsFixed(0);
+        responseCrypto = requestCrypto;
+        responseCurrency = requestCurrency;
       });
     } catch (e) {
       print(e);
@@ -162,7 +171,7 @@ class _PriceScreenState extends State<PriceScreen> {
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
                   //15. Update the Text Widget with the data in bitcoinValueInUSD.
-                  '1 $selectCrypto = $bitcoinValueInUSD $selectFiat',
+                  '1 $responseCrypto = $responseValue $responseCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -176,7 +185,7 @@ class _PriceScreenState extends State<PriceScreen> {
           GetExchangeWidget(
             horizontalInset: 20,
             onPressed: () => getData(targetURL),
-            title: 'Convert ${cryptoDescription[selectCrypto]}($selectCrypto) to ${currencyDescription[selectFiat]}',
+            title: 'Convert ${cryptoDescription[requestCrypto]}($requestCrypto) to ${currencyDescription[requestCurrency]}',
           ),
           SizedBox(height: 100,),
           Container(
