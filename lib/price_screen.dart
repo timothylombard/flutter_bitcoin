@@ -14,6 +14,7 @@ class _PriceScreenState extends State<PriceScreen> {
   String selectedCrypto = 'BTC';
   String selectFiat = '?';
   String selectCrypto = 'BTC';
+  String targetURL = '$coinAPIURL/BTC/USD?apiKey=$apiKey';
 
   DropdownButton<String> androidCurrencyDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -38,16 +39,16 @@ class _PriceScreenState extends State<PriceScreen> {
 
   DropdownButton<String> androidCryptoDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
-    for (String currency in currenciesList) {
+    for (String crypto in cryptoList) {
       var newItem = DropdownMenuItem(
-        child: Text(currency),
-        value: currency,
+        child: Text(crypto),
+        value: crypto,
       );
       dropdownItems.add(newItem);
     }
 
     return DropdownButton<String>(
-      value: selectedCurrency,
+      value: selectedCrypto,
       items: dropdownItems,
       onChanged: (value) {
         setState(() {
@@ -66,6 +67,8 @@ class _PriceScreenState extends State<PriceScreen> {
     return CupertinoPicker(
       backgroundColor: Colors.lightBlue,
       itemExtent: 32.0,
+      useMagnifier:true,
+      magnification: 1.5,
       onSelectedItemChanged: (selectedIndex) {
         print(selectedIndex);
         String selectedFiat = currenciesList[selectedIndex];
@@ -74,9 +77,9 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectFiat = selectedFiat;
         });
-        String coinUrl = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
-        print(coinUrl);
-        getData(coinUrl);
+        targetURL = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
+        print(targetURL);
+        //getData(coinUrl);
 
       },
       children: pickerItems,
@@ -91,18 +94,20 @@ class _PriceScreenState extends State<PriceScreen> {
 
     return CupertinoPicker(
       backgroundColor: Colors.lightBlue,
-      itemExtent: 32.0,
+      itemExtent: 30.0,
+      useMagnifier:true,
+      magnification: 1.25,
       onSelectedItemChanged: (selectedIndex) {
         print(selectedIndex);
         String selectedCrypto = cryptoList[selectedIndex];
         print(selectedCrypto);
-        String cryptoValue = selectedCrypto;
+        //String cryptoValue = selectedCrypto;
         setState(() {
           selectCrypto = selectedCrypto;
         });
-        String coinUrl = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
-        print(coinUrl);
-        getData(coinUrl);
+        targetURL = '$coinAPIURL/$selectCrypto/$selectFiat?apiKey=$apiKey';
+        print(targetURL);
+        //getData(coinUrl);
 
       },
       children: pickerItems,
@@ -129,12 +134,11 @@ class _PriceScreenState extends State<PriceScreen> {
   @override
   void initState() {
     super.initState();
-    getData('https://rest.coinapi.io/v1/exchangerate/BTC/USD?apiKey=23181948-CE3E-4EBA-879A-2A79237DBBEE');
+    //getData('https://rest.coinapi.io/v1/exchangerate/BTC/USD?apiKey=23181948-CE3E-4EBA-879A-2A79237DBBEE');
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('🤑 Coin Ticker'),
@@ -154,34 +158,55 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                    //bitcoinValueInUSD
-                  '1 $selectCrypto = $bitcoinValueInUSD $selectFiat',
+                  //15. Update the Text Widget with the data in bitcoinValueInUSD.
+                  '1 BTC = $bitcoinValueInUSD USD',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 20.0,
                     color: Colors.white,
-                  )
-
-                )
+                  ),
+                ),
               ),
             ),
           ),
-
-              Container(
-                height: 150.0,
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(bottom: 30.0),
-                color: Colors.lightBlue,
-                child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown(),
+          Padding(
+            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+            child: Card(
+              color: Colors.lightBlueAccent,
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
-              Container(
-                height: 150.0,
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(bottom: 30.0),
-                color: Colors.lightBlue,
-                child: Platform.isIOS ? iOSCryptoPicker() : androidCryptoDropdown(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+                child: Text(
+                  //15. Update the Text Widget with the data in bitcoinValueInUSD.
+                  'Convert $selectCrypto to $selectFiat',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-
+            ),
+          ),
+          SizedBox(height: 200,),
+          Container(
+            height: 150.0,
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 30.0),
+            color: Colors.lightBlue,
+            child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown()
+          ),
+          Container(
+              height: 150.0,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 30.0),
+              color: Colors.lightBlue,
+              child: Platform.isIOS ? iOSCryptoPicker() : androidCryptoDropdown()
+          ),
+          SizedBox(height: 100,)
         ],
       ),
     );

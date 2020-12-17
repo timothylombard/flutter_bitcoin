@@ -73,8 +73,51 @@ const List<String> cryptoList = [
   'BTC',
   'ETH',
   'LTC',
+  'XRP',
+  'XLM',
+  'XMR',
+  'NEO',
+  'ZEC',
+  'ADA',
+  'TRX',
+  'ONT',
 ];
 
+const Map currencyDescription = {
+  'AUD': 'Australian Dollar',
+  'BRL': 'Brazillian Real' ,
+  'CAD':'Canadian Dollar',
+  'CNY': 'Chinese Yuan',
+  'EUR': 'Euro',
+  'GBP': 'Great British Pound',
+  'HKD': 'Hong Kong Dollar',
+  'IDR': 'Indonesian Rupiah',
+  'ILS': 'Israeli Shekel',
+  'INR': 'Indian Rupee',
+  'JPY': 'Japanese Yen',
+  'MXN': 'Mexican Peso',
+  'NOK': 'Norwegian Krone',
+  'NZD': 'New Zealand Dollar',
+  'PLN': 'Polish Zloty',
+  'RON': 'Romanian New Leu',
+  'RUB': 'Russian Ruble',
+  'SEK': 'Swedish Krona',
+  'SGD': 'Singapore Dollar',
+  'USD': 'United States Dollar',
+  'ZAR': 'South African Rand',
+};
 
+const Map cryptoDescription = {
+  'BTC':'Bitcoin',
+  'ETH':'Ethereum',
+  'LTC':'Litecoin',
+  'XRP': 'Ripple',
+  'XLM': 'Stellar',
+  'XMR': 'Monero',
+  'NEO': 'Neo',
+  'ZEC': 'Zcash',
+  'ADA': 'Cardano',
+  'TRX': 'Tron',
+  'ONT': "Ontology",
 
-//class CoinData {}
+};
