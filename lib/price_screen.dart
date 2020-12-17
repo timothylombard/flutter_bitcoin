@@ -176,9 +176,9 @@ class _PriceScreenState extends State<PriceScreen> {
           GetExchangeWidget(
             horizontalInset: 20,
             onPressed: () => getData(targetURL),
-            title: 'Convert ${cryptoDescription[selectCrypto]} to ${currencyDescription[selectFiat]}',
+            title: 'Convert ${cryptoDescription[selectCrypto]}($selectCrypto) to ${currencyDescription[selectFiat]}',
           ),
-          SizedBox(height: 175,),
+          SizedBox(height: 100,),
           Container(
               height: 150.0,
               alignment: Alignment.center,
@@ -194,7 +194,7 @@ class _PriceScreenState extends State<PriceScreen> {
             child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown()
           ),
 
-          SizedBox(height: 90,)
+          SizedBox(height: 50,)
         ],
       ),
     );
