@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'getExchangeButton.dart';
 import 'coin_data.dart';
 import 'dart:io' show Platform;
 
@@ -15,6 +16,7 @@ class _PriceScreenState extends State<PriceScreen> {
   String selectFiat = '?';
   String selectCrypto = 'BTC';
   String targetURL = '$coinAPIURL/BTC/USD?apiKey=$apiKey';
+
 
   DropdownButton<String> androidCurrencyDropdown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -118,6 +120,7 @@ class _PriceScreenState extends State<PriceScreen> {
   String bitcoinValueInUSD = '?';
   String fiatValue = 'USD';
 
+
   //11. Create an async method here await the coin data from coin_data.dart
   void getData(String newurl) async {
     try {
@@ -159,7 +162,7 @@ class _PriceScreenState extends State<PriceScreen> {
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
                   //15. Update the Text Widget with the data in bitcoinValueInUSD.
-                  '1 BTC = $bitcoinValueInUSD USD',
+                  '1 $selectCrypto = $bitcoinValueInUSD $selectFiat',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -181,7 +184,7 @@ class _PriceScreenState extends State<PriceScreen> {
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
                   //15. Update the Text Widget with the data in bitcoinValueInUSD.
-                  'Convert $selectCrypto to $selectFiat',
+                  'Convert ${cryptoDescription[selectCrypto]} to ${currencyDescription[selectFiat]}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -191,14 +194,12 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
-          SizedBox(height: 200,),
-          Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
-            child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown()
+          GetExchangeWidget(
+            horizontalInset: 20,
+            onPressed: () => getData(targetURL),
+            title: 'Convert ${cryptoDescription[selectCrypto]} to ${currencyDescription[selectFiat]}',
           ),
+          SizedBox(height: 175,),
           Container(
               height: 150.0,
               alignment: Alignment.center,
@@ -206,7 +207,15 @@ class _PriceScreenState extends State<PriceScreen> {
               color: Colors.lightBlue,
               child: Platform.isIOS ? iOSCryptoPicker() : androidCryptoDropdown()
           ),
-          SizedBox(height: 100,)
+          Container(
+            height: 150.0,
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 30.0),
+            color: Colors.lightBlue,
+            child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown()
+          ),
+
+          SizedBox(height: 90,)
         ],
       ),
     );
