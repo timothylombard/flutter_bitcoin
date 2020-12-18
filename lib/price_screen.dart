@@ -16,8 +16,8 @@ class _PriceScreenState extends State<PriceScreen> {
   String selectFiat = '?';
   String selectCrypto = 'BTC';
   String targetURL = '$coinAPIURL/BTC/USD?apiKey=$apiKey';
-  String requestCurrency = '?';
-  String requestCrypto = '?';
+  String requestCurrency = 'USD';
+  String requestCrypto = 'BTC';
   String responseCurrency = '?';
   String responseCrypto ='?';
   String responseValue = '0.0';
@@ -40,6 +40,8 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           requestCurrency = value;
         });
+        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
+        print(targetURL);
       },
     );
   }
@@ -61,6 +63,8 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           requestCrypto = value;
         });
+        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
+        print(targetURL);
       },
     );
   }
@@ -185,7 +189,7 @@ class _PriceScreenState extends State<PriceScreen> {
           GetExchangeWidget(
             horizontalInset: 20,
             onPressed: () => getData(targetURL),
-            title: 'Convert ${cryptoDescription[requestCrypto]}($requestCrypto) to ${currencyDescription[requestCurrency]}',
+            title: 'Convert ${cryptoDescription[requestCrypto]}($requestCrypto) to ${currencyDescription[requestCurrency]} ($requestCurrency)',
           ),
           SizedBox(height: 100,),
           Container(
