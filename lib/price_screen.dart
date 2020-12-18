@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'getExchangeButton.dart';
 import 'coin_data.dart';
 import 'dart:io' show Platform;
-
+import 'pickers.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -19,121 +19,29 @@ class _PriceScreenState extends State<PriceScreen> {
   String requestCurrency = 'USD';
   String requestCrypto = 'BTC';
   String responseCurrency = '?';
-  String responseCrypto ='?';
+  String responseCrypto = '?';
   String responseValue = '0.0';
 
-
-  DropdownButton<String> androidCurrencyDropdown() {
-    List<DropdownMenuItem<String>> dropdownItems = [];
-    for (String currency in currenciesList) {
-      var newItem = DropdownMenuItem(
-        child: Text(currency),
-        value: currency,
-      );
-      dropdownItems.add(newItem);
-    }
-
-    return DropdownButton<String>(
-      value: requestCurrency,
-      items: dropdownItems,
-      onChanged: (value) {
-        setState(() {
-          requestCurrency = value;
-        });
-        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
-        print(targetURL);
-      },
-    );
+  void onChangeCurrency(String value) {
+    setState(() {
+      requestCurrency = value;
+    });
+    targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
+    print(targetURL);
   }
 
-  DropdownButton<String> androidCryptoDropdown() {
-    List<DropdownMenuItem<String>> dropdownItems = [];
-    for (String crypto in cryptoList) {
-      var newItem = DropdownMenuItem(
-        child: Text(crypto),
-        value: crypto,
-      );
-      dropdownItems.add(newItem);
-    }
-
-    return DropdownButton<String>(
-      value: requestCrypto,
-      items: dropdownItems,
-      onChanged: (value) {
-        setState(() {
-          requestCrypto = value;
-        });
-        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
-        print(targetURL);
-      },
-    );
+  void onChangeCrypto(String value) {
+    setState(() {
+      requestCrypto = value;
+    });
+    targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
+    print(targetURL);
   }
 
-  CupertinoPicker iOSCurrencyPicker() {
-    List<Text> pickerItems = [];
-    for (String currency in currenciesList) {
-      pickerItems.add(Text(currency));
-    }
-
-    return CupertinoPicker(
-      backgroundColor: Colors.lightBlue,
-      itemExtent: 32.0,
-      useMagnifier:true,
-      magnification: 1.5,
-      onSelectedItemChanged: (selectedIndex) {
-        print(selectedIndex);
-        String selectedFiat = currenciesList[selectedIndex];
-        print(selectedFiat);
-        //requestCurrency = selectedFiat;
-        setState(() {
-          requestCurrency = selectedFiat;
-        });
-        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
-        print(targetURL);
-        //getData(coinUrl);
-
-      },
-      children: pickerItems,
-    );
-  }
-
-  CupertinoPicker iOSCryptoPicker() {
-    List<Text> pickerItems = [];
-    for (String crypto in cryptoList) {
-      pickerItems.add(Text(crypto));
-    }
-
-    return CupertinoPicker(
-      backgroundColor: Colors.lightBlue,
-      itemExtent: 30.0,
-      useMagnifier:true,
-      magnification: 1.25,
-      onSelectedItemChanged: (selectedIndex) {
-        print(selectedIndex);
-        String selectedCrypto = cryptoList[selectedIndex];
-        print(selectedCrypto);
-        //String cryptoValue = selectedCrypto;
-        setState(() {
-          requestCrypto = selectedCrypto;
-        });
-        targetURL = '$coinAPIURL/$requestCrypto/$requestCurrency?apiKey=$apiKey';
-        print(targetURL);
-        //getData(coinUrl);
-
-      },
-      children: pickerItems,
-    );
-  }
-
-  //12. Create a variable to hold the value and use in our Text Widget. Give the variable a starting value of '?' before the data comes back from the async methods.
-
-
-
-
+//  12. Create a variable to hold the value and use in our Text Widget. Give the variable a starting value of '?' before the data comes back from the async methods.
 
   //11. Create an async method here await the coin data from coin_data.dart
   void getData(String newurl) async {
-
     try {
       double data = await CoinData().getCoinData(newurl);
       print(data);
@@ -147,6 +55,7 @@ class _PriceScreenState extends State<PriceScreen> {
       print(e);
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -185,32 +94,60 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
-
           GetExchangeWidget(
             horizontalInset: 20,
             onPressed: () => getData(targetURL),
-            title: 'Convert ${cryptoDescription[requestCrypto]}($requestCrypto) to ${currencyDescription[requestCurrency]} ($requestCurrency)',
+            title:
+                'Click to Convert ${cryptoDescription[requestCrypto]}($requestCrypto) to ${currencyDescription[requestCurrency]} ($requestCurrency)',
           ),
-          SizedBox(height: 100,),
-          Container(
-              height: 150.0,
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(bottom: 30.0),
-              color: Colors.lightBlue,
-              child: Platform.isIOS ? iOSCryptoPicker() : androidCryptoDropdown()
+          SizedBox(
+            height: 100,
           ),
           Container(
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS ? iOSCurrencyPicker() : androidCurrencyDropdown()
+            child: Platform.isIOS
+                ? IosPicker(
+                    itemList: cryptoList,
+                    // 'onChange' calls 'onChangeCrypto' whenever
+                    // the dropdown value changes
+                    onChange: onChangeCrypto,
+                  )
+                : AndroidCurrencyDropdown(
+                    selectedItem: requestCrypto,
+                    itemList: cryptoList,
+                    // 'onChange' calls 'onChangeCrypto' whenever
+                    // the dropdown value changes
+                    onChange: onChangeCrypto,
+                  ),
           ),
-
-          SizedBox(height: 50,)
+          Container(
+            height: 150.0,
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(bottom: 30.0),
+            color: Colors.lightBlue,
+            child: Platform.isIOS
+                ? IosPicker(
+                    itemList: currenciesList,
+                    // 'onChange' calls 'onChangeCurrency' whenever
+                    // the dropdown value changes
+                    onChange: onChangeCurrency,
+                  )
+                : AndroidCurrencyDropdown(
+                    selectedItem: requestCurrency,
+                    itemList: currenciesList,
+                    // 'onChange' calls 'onChangeCurrency' whenever
+                    // the dropdown value changes
+                    onChange: onChangeCurrency,
+                  ),
+          ),
+          SizedBox(
+            height: 50,
+          )
         ],
       ),
     );
   }
 }
-
